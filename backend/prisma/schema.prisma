@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum StatusTarefa {
+  PENDENTE
+  EM_ANDAMENTO
+  CONCLUIDA
+}
+
+enum Prioridade {
+  BAIXA
+  MEDIA
+  ALTA
+}
+
+model Usuario {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  email        String   @unique
+  senha        String
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  // Relação: um usuário pode ter várias tarefas
+  tarefas      Tarefa[]
+
+  @@map("usuarios")
+}
+
+model Tarefa {
+  id           Int          @id @default(autoincrement())
+  titulo       String
+  descricao    String?
+  status       StatusTarefa @default(PENDENTE)
+  prioridade   Prioridade   @default(MEDIA)
+  prazo        DateTime?
+  concluidaEm  DateTime?
+  criadoEm     DateTime     @default(now())
+  atualizadoEm DateTime     @updatedAt
+
+  // Chave estrangeira obrigatória ligando a tarefa ao usuário
+  usuarioId    Int
+  usuario      Usuario      @relation(fields: [usuarioId], references: [id], onDelete: Cascade)
+
+  @@index([usuarioId])
+  @@map("tarefas")
+}
+
