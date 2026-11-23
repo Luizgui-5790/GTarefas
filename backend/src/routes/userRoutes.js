@@ -1,21 +1,11 @@
 import { Router } from "express";
+import userController from "../controllers/userController.js";
+import { validarCadastro } from "../middlewares/userMiddleware.js";
+import { validarLogin } from "../middlewares/userMiddleware.js";
 
 const routerUser = Router();
 
-routerUser.get("/user", async (req, res) => {
-    res.send("ok Get");
-});
-
-routerUser.post("/user", async (req, res) => {
-    res.send("ok Post");
-});
-
-routerUser.put("/user", async (req, res) => {
-    res.send("ok Put");
-});
-
-routerUser.delete("/user", async (req, res) => {
-    res.send("ok Delete");
-});
+routerUser.post("/cadastro", validarCadastro, userController.cadastro);
+routerUser.post("/login", validarLogin, userController.login);
 
 export default routerUser;
