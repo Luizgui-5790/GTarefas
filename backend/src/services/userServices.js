@@ -1,5 +1,5 @@
 import userRepository from "../repositories/userRepository.js";
-import AppError from "../middlewares/errorMiddleware.js";
+import { AppError } from "../middlewares/errorMiddleware.js";
 import bcrypt from "bcrypt";
 
 class UserServices {
@@ -25,7 +25,26 @@ class UserServices {
         }
     }
 
-    async login() {}
+    async login(usuario) {
+        const { email, senha } = usuario;
+
+        const usuarioExiste = await userRepository.buscarPorEmail(email);
+
+        if (!usuarioExiste) {
+            throw new AppError("Sem cadastrado", 404);
+        } else {
+            const senhaCorreta = await bcrypt.compare(
+                senha,
+                usuarioExiste.senha,
+            );
+
+            if (!senhaCorreta) {
+                throw new AppError("E-mail ou senha incorretos", 401);
+            }
+
+            return usuarioExiste;
+        }
+    }
 }
 
 const userServices = new UserServices();

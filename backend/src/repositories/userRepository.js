@@ -10,8 +10,10 @@ class UserRepository {
     }
 
     async cadastrar(usuario) {
+        const { nome, email, senha } = usuario;
+
         const novoUsuario = await prisma.usuario.create({
-            data: usuario,
+            data: { nome, email, senha },
         });
 
         return novoUsuario;

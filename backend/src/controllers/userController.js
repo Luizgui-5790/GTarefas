@@ -16,7 +16,16 @@ class UserController {
         });
     }
 
-    async login(req, res) {}
+    async login(req, res) {
+        const { email, senha } = req.body;
+
+        const logar = await userServices.login({ email, senha });
+
+        res.status(200).json({
+            logado: true,
+            logar,
+        });
+    }
 }
 
 const userController = new UserController();
